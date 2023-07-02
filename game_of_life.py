@@ -72,7 +72,81 @@ class Grid:
             for x in range(self.width):
                 if self.cells[y][x].alive: alive += 1
         return alive
+    
+#When editing the cells, the grid is not updated until the user presses enter
+def edit(stdscr, grid: Grid):
+    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
+    curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    DEAD = curses.color_pair(1)
+    ALIVE = curses.color_pair(2)
+    TEXT = curses.color_pair(3)
 
+    #Show the cursor
+    curses.curs_set(1)
+
+    #Move cursor to top left corner
+    cursor_y = 1
+    cursor_x = 1
+    stdscr.move(cursor_y, cursor_x)
+
+    while True:
+        #If q is pressed, exit edit mode, if r is pressed randomize grid, if space is pressed toggle cell state
+        #If arrow keys are pressed move cursor, if c is pressed clear grid
+        try:
+            key_pressed = stdscr.getch()
+        except:
+            key_pressed = None
+
+        if key_pressed == 113:
+            break
+        elif key_pressed == 114:
+            grid.randomize()
+        elif key_pressed == 99:
+            grid = Grid(grid.height, grid.width)
+
+        #Move cursor
+        if key_pressed == curses.KEY_UP:
+            if cursor_y > 1:
+                cursor_y -= 1
+        elif key_pressed == curses.KEY_DOWN:
+            if cursor_y < grid.height:
+                cursor_y += 1
+        elif key_pressed == curses.KEY_LEFT:
+            if cursor_x > 1:
+                cursor_x -= 1
+        elif key_pressed == curses.KEY_RIGHT:
+            if cursor_x < grid.width:
+                cursor_x += 1
+        #Toggle cell state when space is pressed
+        elif key_pressed == 32:
+            grid.toggle(cursor_y-1, cursor_x-1)
+
+        stdscr.addstr(0,1,"q: game r: randomize, c: clear", TEXT)
+
+        #Print grid
+        for y in range(grid.height):
+            for x in range(grid.width):
+                if grid.cells[y][x].alive:
+                    pass
+                    stdscr.addstr(1+y, 1+x, " ", ALIVE)
+                else:
+                    pass
+                    stdscr.addstr(1+y, 1+x, " ", DEAD)
+
+        #Move cursor back to its position
+        stdscr.move(cursor_y, cursor_x)
+
+        stdscr.refresh()
+        #time.sleep(0.1)
+
+    #Hide the cursor
+    curses.curs_set(0)
+    #Exit edit mode
+
+    return grid
+
+#Main function
 def main(stdscr):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
@@ -127,11 +201,13 @@ def main(stdscr):
         except:
             key_pressed = None
         
-        #Exit if q is pressed, if r is pressed randomize grid
+        #Exit if q is pressed, if r is pressed randomize grid, if e is pressed edit grid
         if key_pressed == 113:
             break
         elif key_pressed == 114:
             grid.randomize()
+        elif key_pressed == 101:
+            grid = edit(stdscr, grid)
 
         #Print grid
         for y in range(grid.height):
