@@ -10,6 +10,5 @@ Run and see the Game play updating every 0.1 seconds. Press <**q**> to exit, or 
 
 ### To-Do
 
-* Wrap around the screen
 * Add some colour to the text
 * Add a How-To window (curses.newwin())
