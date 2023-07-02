@@ -1,5 +1,7 @@
 # Game of Life
 
+![](docs/game-of-life-vid.gif)
+
 Conway's Game of life in python
 
 * This program has been coded to test how the **curses** python module works.
