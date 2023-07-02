@@ -65,6 +65,14 @@ class Grid:
             for x in range(self.width):
                 self.cells[y][x].alive = random.choice([True, False])
 
+    #Count alive cells
+    def count_alive(self):
+        alive = 0
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.cells[y][x].alive: alive += 1
+        return alive
+
 def main(stdscr):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
@@ -84,6 +92,20 @@ def main(stdscr):
     #Create grid
     grid = Grid(height-2, width-2) #Leave space for border
 
+    #Check if display is too small
+    if height < 3 or width < 50:
+        stdscr.clear()
+        stdscr.border()
+        stdscr.addstr(1, 1, "Please resize the window to at least 50x3", TEXT)
+        stdscr.refresh()
+        while True:
+            try:
+                key_pressed = stdscr.getch()
+            except:
+                key_pressed = None
+            if key_pressed == 113:
+                return
+
     #Randomize grid
     grid.randomize()
 
@@ -95,8 +117,10 @@ def main(stdscr):
         stdscr.border()
 
         #Print text
-        stdscr.addstr(0, 1, "Press q to quit, r to randomize", TEXT)
-        stdscr.addstr(0, width-20, "Generation: " + str(grid.generation), TEXT)
+        stdscr.addstr(0, 1, "q: quit r: randomize", TEXT)
+        stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), TEXT)
+        stdscr.addstr(0, width//2, "Alive: " + str(grid.count_alive()), TEXT)
+        stdscr.addstr(height-1, 1, "by Pedro Juan Royo - @parzival1918", TEXT)
 
         try:
             key_pressed = stdscr.getch()
