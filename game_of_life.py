@@ -94,14 +94,20 @@ class Grid:
                 if self.cells[y][x].alive: alive += 1
         return alive
     
+#Function to handle adding colour to the program
+def colour_item(stdscr, y, x, text, colour):
+    stdscr.addstr(y, x, text, colour)
+
 #When editing the cells, the grid is not updated until the user presses enter
-def edit(stdscr, grid: Grid):
+def edit(stdscr, grid: Grid, use_colour: bool):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
     DEAD = curses.color_pair(1)
     ALIVE = curses.color_pair(2)
     TEXT = curses.color_pair(3)
+    YELLOW = curses.color_pair(4)
 
     #Get screen size
     height, width = stdscr.getmaxyx()
@@ -129,31 +135,41 @@ def edit(stdscr, grid: Grid):
         elif key_pressed == 99:
             grid = Grid(grid.height, grid.width)
 
+        #Add window border
+        stdscr.border()
+
+        if use_colour:
+            text_colour = YELLOW|curses.A_BOLD
+        else:
+            text_colour = TEXT
+
         #Move cursor
         if key_pressed == curses.KEY_UP:
             if cursor_y > 1:
                 cursor_y -= 1
+                stdscr.addstr(height-1, width-7,"^", text_colour)
         elif key_pressed == curses.KEY_DOWN:
             if cursor_y < grid.height:
                 cursor_y += 1
+                stdscr.addstr(height-1, width-7,"_", text_colour)
         elif key_pressed == curses.KEY_LEFT:
             if cursor_x > 1:
                 cursor_x -= 1
+                stdscr.addstr(height-1, width-7,"<", text_colour)
         elif key_pressed == curses.KEY_RIGHT:
             if cursor_x < grid.width:
                 cursor_x += 1
+                stdscr.addstr(height-1, width-7,">", text_colour)
         #Toggle cell state when space is pressed
         elif key_pressed == 32:
             grid.toggle(cursor_y-1, cursor_x-1)
+            stdscr.addstr(height-1, width-7," ", ALIVE)
 
-        #Add window border
-        stdscr.border()
-
-        stdscr.addstr(0,1,"q: game r: randomize c: clear", TEXT)
-        stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), TEXT)
-        stdscr.addstr(0, width//2 + 1, "Alive: " + str(grid.count_alive()), TEXT)
-        stdscr.addstr(height-1, 1, "by Pedro Juan Royo - @parzival1918", TEXT)
-        stdscr.addstr(height-1, width - 5, "EDIT", TEXT)
+        stdscr.addstr(0,1,"q: game r: randomize c: clear", text_colour)
+        stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), text_colour)
+        stdscr.addstr(0, width//2 + 1, "Alive: " + str(grid.count_alive()), text_colour)
+        stdscr.addstr(height-1, 1, "by Pedro Juan Royo - @parzival1918", text_colour)
+        stdscr.addstr(height-1, width - 5, "EDIT", text_colour)
 
         #Print grid
         for y in range(grid.height):
@@ -178,13 +194,15 @@ def edit(stdscr, grid: Grid):
     return grid
 
 #Main function
-def main(stdscr, wrap: bool, speed: float):
+def main(stdscr, wrap: bool, speed: float, use_colour: bool):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
     DEAD = curses.color_pair(1)
     ALIVE = curses.color_pair(2)
     TEXT = curses.color_pair(3)
+    YELLOW = curses.color_pair(4)
 
     #Do not wait for keypress
     stdscr.nodelay(True)
@@ -222,10 +240,15 @@ def main(stdscr, wrap: bool, speed: float):
         stdscr.border()
 
         #Print text
-        stdscr.addstr(0, 1, "q: quit r: randomize", TEXT)
-        stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), TEXT)
-        stdscr.addstr(0, width//2 + 1, "Alive: " + str(grid.count_alive()), TEXT)
-        stdscr.addstr(height-1, 1, "by Pedro Juan Royo - @parzival1918", TEXT)
+        if use_colour:
+            text_colour = YELLOW|curses.A_BOLD
+        else:
+            text_colour = TEXT
+
+        stdscr.addstr(0, 1, "q: quit r: randomize", text_colour)
+        stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), text_colour)
+        stdscr.addstr(0, width//2 + 1, "Alive: " + str(grid.count_alive()), text_colour)
+        stdscr.addstr(height-1, 1, "by Pedro Juan Royo - @parzival1918", text_colour)
 
         try:
             key_pressed = stdscr.getch()
@@ -238,7 +261,7 @@ def main(stdscr, wrap: bool, speed: float):
         elif key_pressed == 114:
             grid.randomize()
         elif key_pressed == 101:
-            grid = edit(stdscr, grid)
+            grid = edit(stdscr, grid, use_colour)
 
         #Print grid
         for y in range(grid.height):
@@ -265,10 +288,11 @@ def main(stdscr, wrap: bool, speed: float):
     #Exit
 
 if __name__ == "__main__":
-    wrapper(main, False, 0.1)
+    wrapper(main, False, 0.1, False)
 
 def call_game_of_life(args):
     wrap = args.wrap
     speed = args.speed
+    use_colour = args.colour
 
-    wrapper(main, wrap, speed)
+    wrapper(main, wrap, speed, use_colour)

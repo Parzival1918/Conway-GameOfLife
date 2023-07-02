@@ -1,3 +1,4 @@
+#git rm -r --cached . To remove files that have already been commited but are now in the .gitignore file
 __pycache__
 .DS_Store
 standalone/build
