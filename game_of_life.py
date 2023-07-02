@@ -82,6 +82,9 @@ def edit(stdscr, grid: Grid):
     ALIVE = curses.color_pair(2)
     TEXT = curses.color_pair(3)
 
+    #Get screen size
+    height, width = stdscr.getmaxyx()
+
     #Show the cursor
     curses.curs_set(1)
 
@@ -122,7 +125,14 @@ def edit(stdscr, grid: Grid):
         elif key_pressed == 32:
             grid.toggle(cursor_y-1, cursor_x-1)
 
-        stdscr.addstr(0,1,"q: game r: randomize, c: clear", TEXT)
+        #Add window border
+        stdscr.border()
+
+        stdscr.addstr(0,1,"q: game r: randomize c: clear", TEXT)
+        stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), TEXT)
+        stdscr.addstr(0, width//2 + 1, "Alive: " + str(grid.count_alive()), TEXT)
+        stdscr.addstr(height-1, 1, "by Pedro Juan Royo - @parzival1918", TEXT)
+        stdscr.addstr(height-1, width - 5, "EDIT", TEXT)
 
         #Print grid
         for y in range(grid.height):
@@ -167,10 +177,10 @@ def main(stdscr):
     grid = Grid(height-2, width-2) #Leave space for border
 
     #Check if display is too small
-    if height < 3 or width < 50:
+    if height < 3 or width < 60:
         stdscr.clear()
         stdscr.border()
-        stdscr.addstr(1, 1, "Please resize the window to at least 50x3", TEXT)
+        stdscr.addstr(1, 1, "Please resize the window to at least 60x3", TEXT)
         stdscr.refresh()
         while True:
             try:
@@ -193,7 +203,7 @@ def main(stdscr):
         #Print text
         stdscr.addstr(0, 1, "q: quit r: randomize", TEXT)
         stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), TEXT)
-        stdscr.addstr(0, width//2, "Alive: " + str(grid.count_alive()), TEXT)
+        stdscr.addstr(0, width//2 + 1, "Alive: " + str(grid.count_alive()), TEXT)
         stdscr.addstr(height-1, 1, "by Pedro Juan Royo - @parzival1918", TEXT)
 
         try:
