@@ -6,6 +6,7 @@ import curses
 from curses import wrapper
 import random
 import time
+import copy
 
 #Cell class
 class Cell:
@@ -59,18 +60,20 @@ class Grid:
 
     #Run one iteration of the game
     def run(self):
+        stateCopy = copy.deepcopy(self)
         for y in range(self.height):
             for x in range(self.width):
-                neighbors = self.get_neighbors(y, x)
+                neighbors = stateCopy.get_neighbors(y, x)
                 self.cells[y][x].set_state(neighbors)
 
         self.generation += 1
 
     #Run iteration of the game wrapping around the edges
     def run_wrapped(self):
+        stateCopy = copy.deepcopy(self)
         for y in range(self.height):
             for x in range(self.width):
-                neighbors = self.get_neighbors_wrapped(y, x)
+                neighbors = stateCopy.get_neighbors_wrapped(y, x)
                 self.cells[y][x].set_state(neighbors)
 
         self.generation += 1 
@@ -241,11 +244,11 @@ def main(stdscr, wrap: bool, speed: float):
         for y in range(grid.height):
             for x in range(grid.width):
                 if grid.cells[y][x].alive:
-                    pass
                     stdscr.addstr(1+y, 1+x, " ", ALIVE)
+                    # stdscr.addstr(1+y, 1+x, f"{grid.get_neighbors(y, x)}", TEXT)
                 else:
-                    pass
                     stdscr.addstr(1+y, 1+x, " ", DEAD)
+                    # stdscr.addstr(1+y, 1+x, f"{grid.get_neighbors(y, x)}", TEXT)
 
         stdscr.refresh()
 
@@ -253,6 +256,7 @@ def main(stdscr, wrap: bool, speed: float):
         if wrap:
             grid.run_wrapped()
         else:
+            stdscr.addstr(0, 0, "NORMAL STEP", TEXT)
             grid.run()
 
         #Wait for keypress
