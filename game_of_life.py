@@ -47,6 +47,15 @@ class Grid:
                 if x + j < 0 or x + j >= self.width: continue
                 if self.cells[y + i][x + j].alive: neighbors += 1
         return neighbors
+    
+    #Get number of neighbors wrapping around the edges
+    def get_neighbors_wrapped(self, y: int, x: int):
+        neighbors = 0
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if i == 0 and j == 0: continue
+                if self.cells[(y + i) % self.height][(x + j) % self.width].alive: neighbors += 1
+        return neighbors
 
     #Run one iteration of the game
     def run(self):
@@ -56,6 +65,15 @@ class Grid:
                 self.cells[y][x].set_state(neighbors)
 
         self.generation += 1
+
+    #Run iteration of the game wrapping around the edges
+    def run_wrapped(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                neighbors = self.get_neighbors_wrapped(y, x)
+                self.cells[y][x].set_state(neighbors)
+
+        self.generation += 1 
 
     #Assign random state to cells
     def randomize(self):
@@ -157,7 +175,7 @@ def edit(stdscr, grid: Grid):
     return grid
 
 #Main function
-def main(stdscr):
+def main(stdscr, wrap: bool, speed: float):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
     curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
@@ -232,12 +250,21 @@ def main(stdscr):
         stdscr.refresh()
 
         #Run one iteration
-        grid.run()
+        if wrap:
+            grid.run_wrapped()
+        else:
+            grid.run()
 
         #Wait for keypress
-        time.sleep(0.1)
+        time.sleep(speed)
 
     #Exit
 
 if __name__ == "__main__":
-    wrapper(main)
+    wrapper(main, False, 0.1)
+
+def call_game_of_life(args):
+    wrap = args.wrap
+    speed = args.speed
+
+    wrapper(main, wrap, speed)
