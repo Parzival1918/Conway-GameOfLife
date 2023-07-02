@@ -1,6 +1,6 @@
 # Game of Life
 
-![](docs/game-of-life-vid.gif)
+![](docs/game-of-life-vid-standalone.gif)
 
 Conway's Game of life in python
 
