@@ -1,9 +1,10 @@
 #!/opt/homebrew/bin/python3
+#CHANGE THE SHEBANG LINE TO THE PATH OF YOUR PYTHON INTERPRETER
 
 #Parse the command line arguments
 
 import argparse
-import game_of_life
+import game_code as game_of_life
 
 parser = argparse.ArgumentParser()
 
