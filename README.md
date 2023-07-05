@@ -12,13 +12,8 @@ In edit mode, press <**SPACE**> to toggle the cell state. Press <**q**> to start
 
 ## Installation
 
-This was developed using Python 3.11.4.
-
-1. Clone the repository `git clone https://github.com/Parzival1918/Conway-GameOfLife.git`
-2. Change directory to the repository `cd Conway-GameOfLife/code`
-3. Run the program `python3 game_of_life.py`
-
-If you want to run the code from anywhere, you can add the code directory to your PATH variable and set it as an executable with the command `chmod +x game-of-life.py`. First you will need to change the first line of the file to `#!/usr/bin/python3` or something else depending on your system, basically the path to your python3 installation in your system. After that you can run the program from anywhere in your system by typing `game-of-life.py` in your terminal.
+* `pipx install game-of-life-uc`. You must install `pipx` first if you don't have it already.
+* Run with `game-of-life`
 
 ### Dependencies
 
