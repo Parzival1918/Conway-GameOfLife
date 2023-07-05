@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "game-of-life-uc"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Pedro Juan Royo <pedro.juan.royo@gmail.com>"]
 readme = "README.md"

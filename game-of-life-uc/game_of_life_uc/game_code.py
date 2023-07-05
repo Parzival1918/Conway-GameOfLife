@@ -143,27 +143,27 @@ def edit(stdscr, grid: Grid, use_colour: bool):
         else:
             text_colour = TEXT
 
-        # #Move cursor
-        # if key_pressed == curses.KEY_UP:
-        #     if cursor_y > 1:
-        #         cursor_y -= 1
-        #         stdscr.addstr(height-1, width-7,"^", text_colour)
-        # elif key_pressed == curses.KEY_DOWN:
-        #     if cursor_y < grid.height:
-        #         cursor_y += 1
-        #         stdscr.addstr(height-1, width-7,"_", text_colour)
-        # elif key_pressed == curses.KEY_LEFT:
-        #     if cursor_x > 1:
-        #         cursor_x -= 1
-        #         stdscr.addstr(height-1, width-7,"<", text_colour)
-        # elif key_pressed == curses.KEY_RIGHT:
-        #     if cursor_x < grid.width:
-        #         cursor_x += 1
-        #         stdscr.addstr(height-1, width-7,">", text_colour)
-        # #Toggle cell state when space is pressed
-        # elif key_pressed == 32:
-        #     grid.toggle(cursor_y-1, cursor_x-1)
-        #     stdscr.addstr(height-1, width-7," ", ALIVE)
+        #Move cursor
+        if key_pressed == curses.KEY_UP:
+            if cursor_y > 1:
+                cursor_y -= 1
+                # stdscr.addstr(height-1, width-7,"^", text_colour)
+        elif key_pressed == curses.KEY_DOWN:
+            if cursor_y < grid.height:
+                cursor_y += 1
+                # stdscr.addstr(height-1, width-7,"_", text_colour)
+        elif key_pressed == curses.KEY_LEFT:
+            if cursor_x > 1:
+                cursor_x -= 1
+                # stdscr.addstr(height-1, width-7,"<", text_colour)
+        elif key_pressed == curses.KEY_RIGHT:
+            if cursor_x < grid.width:
+                cursor_x += 1
+                # stdscr.addstr(height-1, width-7,">", text_colour)
+        #Toggle cell state when space is pressed
+        elif key_pressed == 32:
+            grid.toggle(cursor_y-1, cursor_x-1)
+            # stdscr.addstr(height-1, width-7," ", ALIVE)
 
         stdscr.addstr(0,1,"q: game r: randomize c: clear", text_colour)
         stdscr.addstr(0, width//2 + width//4, "Gen: " + str(grid.generation), text_colour)
